@@ -8,12 +8,13 @@ import psycopg2
 data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
 
 authors = {}
+UNKOWN = ['Anon.', '"""A Yankee"""', 'Eudora', 'Evangeline']
 fp = os.path.join(data_dir, 'gender.csv')
 with open(fp, 'r') as auths:
     for line in auths:
         aline = line.split('|')
         authors[aline[0]] = aline[1]
-    authors['"""A Yankee"""'] = ''
+    #authors['"""A Yankee"""'] = ''
 
 db = {
     'NAME': 'litlong',
@@ -46,6 +47,7 @@ query = "ALTER SEQUENCE api_genre_id_seq RESTART WITH 1"
 cur.execute(query)
 
 IDS = {
+    "A Californian circling the globe": None,
     "A journey from Edinburgh through parts of North Britain vol. 1": None,
     "A journey from Edinburgh through parts of North Britain vol. 2": None,
     "American Four-in-Hand in Britain": 152,
@@ -134,7 +136,7 @@ def _get_title_ids(title):
 
 def get_author_id(first_name, surname):
     a_id = None
-    query = "SELECT id FROM api_author WHERE forenames = $$'{0}'$$ AND surname = '{1}'".format(
+    query = "SELECT id FROM api_author WHERE forenames = $${0}$$ AND surname = $${1}$$".format(
             first_name, surname)
     cur = con.cursor()
     cur.execute(query)
@@ -163,7 +165,7 @@ def get_publisher_id(name):
 
 def get_genre_id(genre):
     g_id = None
-    query = "SELECT id FROM api_genre WHERE name = $$'{0}'$$".format(genre)
+    query = "SELECT id FROM api_genre WHERE name = $${0}$$".format(genre)
     cur = con.cursor()
     cur.execute(query)
     res = cur.fetchone()
@@ -176,27 +178,28 @@ def get_genre_id(genre):
 
 
 def insert_author(name, gender):
-
     names = name.split(',')
+    print names
     if len(names) != 2:
-        if names[0] == 'Anon.':
-            names[0] = ''
-            names.append('Anon');
-        elif names[0] == '"""A Yankee"""':
-            names[0] = ''
-            names.append('A Yankee');
+        if names[0] in UNKOWN:
+            #names[1] = ''
+            names.append('')
             gender = 'unknown'
         else:
             print 'Name is not correct:  ', a1
             return -1;
-
-    first_name = names[0]
-    surname = names[1]
+    print names
+    first_name = names[1]
+    surname = names[0]
     print first_name, surname, gender
+
+    if len(name) == 0:
+        exit(0)
+
 
     a_id = get_author_id(first_name, surname)
     if a_id == -1:
-        query = "INSERT INTO api_author(forenames, surname, gender) VALUES ($$'{0}'$$, '{1}', '{2}') RETURNING id".format(
+        query = "INSERT INTO api_author(forenames, surname, gender) VALUES ($${0}$$, $${1}$$, '{2}') RETURNING id".format(
             first_name, surname, gender[0])
         cur = con.cursor()
         cur.execute(query)
@@ -275,14 +278,17 @@ with open(fp, 'r') as adoc:
             g_id = get_genre_id(genre)
             if g_id == -1:
 
-                query = "INSERT INTO api_genre(name) VALUES ($$'{0}'$$) RETURNING id".format(genre)
+                query = "INSERT INTO api_genre(name) VALUES ($${0}$$) RETURNING id".format(genre)
                 cur.execute(query)
                 g_id = cur.fetchone()[0]
+                #con.commit()
                 print 'Insert new genre: {0} with id: {1}'.format(genre, g_id)
 
             query = "INSERT INTO api_document_genre(document_id, genre_id) VALUES ({0}, {1})".format(doc_id, g_id)
             cur.execute(query)
-            print "Insert new api_document_genre for {0} => {1}".format(doc_id, genre)
+            print "Insert new api_document_genre for {0} => {1} {2}".format(doc_id, g_id, genre)
+
+            con.commit()
             cur.close()
         return success
 
@@ -305,7 +311,7 @@ with open(fp, 'r') as adoc:
         g3 = aline[10]
         publisher = aline[11]
 
-        print '\n','* ',title,' *', doc_id, doc_id == None, len(doc_id)
+        print '\n','* ',title,' *'
 
         # get document id
         if len(doc_id) == 0:

@@ -1,5 +1,5 @@
 Authors|Gender
-A, Yankee|unknown
+"""A Yankee"""|unknown
 Abbott, Jacob|male
 Airy, Osmund (ed.)|male
 Alexander, Jane|female
@@ -123,7 +123,7 @@ Fuller, Henry|male
 Fuller, Henry Starkey|male
 Fuller, Hiram|unknown
 Furniss, Harry|male
-Galth, John|male
+Galt, John|male
 Gibson, William|male
 Gilfillan, George|male
 Glass, Chester|unknown
@@ -136,7 +136,7 @@ Graham, Clementina Stirling|female
 Graham, Stephen|male
 Grant, James|male
 Gray, Asa|unknown
-Gray, Jane Loring (ed.)|female
+Gray, Jane Loring|female
 Gray, Patrick|male
 Gray, Thomas|male
 Greeley, Horace|male
@@ -144,16 +144,16 @@ Greenwood, Grace|female
 Griscom, John|male
 Groome, Francis Hindes|male
 Guild, Curtis|male
-H. G.|unknown
+H., G.|unknown
 Haight, Canniff|unknown
 Hall, Basil|male
 Hall, Samuel Carter|male
 Hamilton, Thomas|male
 Hamilton, Thomas|male
 Hanna, William|male
-Harding, Edward J. (ed.)|male
+Harding, Edward J.|male
 Hardy, Robina F.|female
-Hare, Augustus J. C.|male
+Hare, Augustus John Cuthbert|male
 Hargreaves, Thomas|male
 Harker, Lizzie Allen|female
 Harper, George McLean|male
@@ -170,7 +170,7 @@ Holloway, Henry Clay|male
 Holmes, Burton|unknown
 Holmes, Oliver Wendall|male
 Horner, Francis|male
-Horner, Leonard (ed.)|male
+Horner, Leonard|male
 Howell, Charles Fish|male
 Hoyt, James M.|male
 Hubbell, Orrin Z.|unknown
@@ -186,7 +186,7 @@ Irving, Washington|unknown
 Jerome, Jerome K.|male
 Johnson, Jesse|male
 Johnston, David|male
-Johnston, Richard Malcolm (ed.)|male
+Johnston, Richard Malcolm|male
 Johnstone, Christian Isobel|unknown
 Johnstone, Doug|male
 Kesson, John (transl.)|male
@@ -356,7 +356,7 @@ Tomes, Robert|male
 Tomlinson, Everett Titsworth|male
 Towne, Charles Hanson|male
 Trench, Francis|male
-Turnbull, William (ed.)|male
+Turnbull, William|male
 Tweedale, Violet|female
 Tytler, Sarah|female
 Vanderslice, John|male
@@ -369,7 +369,7 @@ Warren, Arthur|male
 Watson, Samuel|male
 Watt, Lauchlan MacLean|unknown
 Welsh, Irvine|male
-West, Edward W. (ed.)|male
+West, Edward W.|male
 West, Rebecca|female
 Wheaton, Nathaniel Sheldon|male
 White, Adam|male
