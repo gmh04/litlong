@@ -2,14 +2,18 @@
 
 from os.path import expanduser
 
+import os
 import psycopg2
 
+data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
+
 authors = {}
-fp = '{0}/gender.csv'.format(expanduser("~"))
+fp = os.path.join(data_dir, 'gender.csv')
 with open(fp, 'r') as auths:
     for line in auths:
         aline = line.split('|')
         authors[aline[0]] = aline[1]
+    authors['"""A Yankee"""'] = ''
 
 db = {
     'NAME': 'litlong',
@@ -28,17 +32,23 @@ con = psycopg2.connect(
     "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db));
 
 cur = con.cursor()
-query = "DELETE FROM api_author"
-cur.execute(query)
 query = "DELETE FROM api_document_author"
+cur.execute(query)
+query = "DELETE FROM api_author"
 cur.execute(query)
 query = "ALTER SEQUENCE api_author_id_seq RESTART WITH 1"
 cur.execute(query)
-cur.close()
+query = "DELETE FROM api_document_genre"
+cur.execute(query)
+query = "DELETE FROM api_genre"
+cur.execute(query)
+query = "ALTER SEQUENCE api_genre_id_seq RESTART WITH 1"
+cur.execute(query)
 
 IDS = {
     "A journey from Edinburgh through parts of North Britain vol. 1": None,
     "A journey from Edinburgh through parts of North Britain vol. 2": None,
+    "American Four-in-Hand in Britain": 152,
     "Beatty's tour in Europe": 125,
     "Complete poetical and prose works of Robert Burns": 145,
     "Essays critical and imaginative vol. 1": None,
@@ -114,7 +124,6 @@ def _get_title_ids(title):
     else:
         query = "SELECT id FROM api_document WHERE LOWER(title) like $${0}%$$".format(
             title.lower())
-        print query
         cur = con.cursor()
         cur.execute(query)
         for i in cur.fetchall():
@@ -137,6 +146,35 @@ def get_author_id(first_name, surname):
         a_id = -1;
     return a_id
 
+
+def get_publisher_id(name):
+    a_id = None
+    query = "SELECT id FROM api_publisher WHERE name = '{0}'".format(name)
+    cur = con.cursor()
+    cur.execute(query)
+    res = cur.fetchone()
+    cur.close()
+    if res and len(res) == 1:
+        a_id = res[0]
+    else:
+        a_id = -1;
+    return a_id
+
+
+def get_genre_id(genre):
+    g_id = None
+    query = "SELECT id FROM api_genre WHERE name = $$'{0}'$$".format(genre)
+    cur = con.cursor()
+    cur.execute(query)
+    res = cur.fetchone()
+    cur.close()
+    if res and len(res) == 1:
+        g_id = res[0]
+    else:
+        g_id = -1;
+    return g_id
+
+
 def insert_author(name, gender):
 
     names = name.split(',')
@@ -144,13 +182,17 @@ def insert_author(name, gender):
         if names[0] == 'Anon.':
             names[0] = ''
             names.append('Anon');
+        elif names[0] == '"""A Yankee"""':
+            names[0] = ''
+            names.append('A Yankee');
+            gender = 'unknown'
         else:
             print 'Name is not correct:  ', a1
             return -1;
 
     first_name = names[0]
     surname = names[1]
-    #print first_name, surname, gender
+    print first_name, surname, gender
 
     a_id = get_author_id(first_name, surname)
     if a_id == -1:
@@ -170,16 +212,47 @@ def insert_document_author(doc_id, author_id):
         doc_id, author_id)
     cur = con.cursor()
     cur.execute(query)
+    con.commit()
     cur.close()
 
 
-fp = '{0}/authors.csv'.format(expanduser("~"))
+def update_document_date(doc_id, date):
+    query = "UPDATE api_document SET pubdate = '{0}-01-02' WHERE id = {1}".format(
+        date, doc_id)
+    cur = con.cursor()
+    cur.execute(query)
+    con.commit()
+    cur.close()
+
+
+def update_document_publisher(doc_id, name):
+    pub_id = get_publisher_id(name)
+
+    cur = con.cursor()
+
+    if pub_id == None or pub_id == -1:
+        query = "INSERT INTO api_publisher(name) VALUES ('{0}') RETURNING id".format(name)
+        cur.execute(query)
+        pub_id = cur.fetchone()[0]
+        print 'Insert new publisher: {0} with id: {1}'.format(name, pub_id)
+    query = "UPDATE api_document SET publisher_id = '{0}' WHERE id = {1}".format(pub_id, doc_id)
+    cur.execute(query)
+    con.commit()
+    cur.close()
+
+
+fp = os.path.join(data_dir, 'authors.csv')
 with open(fp, 'r') as adoc:
 
-    def do_author(name, doc_id):
+    def do_author(doc_id, name):
         success = True
 
         if len(name) > 0:
+
+            # TODO remove this
+            name = name.replace('(ed.)', '')
+            name = name.strip()
+
             if name in authors:
                 author_id = insert_author(name, authors[name])
                 if author_id < 0:
@@ -192,34 +265,80 @@ with open(fp, 'r') as adoc:
                 success = False
         return success
 
+    def do_genre(doc_id, genre):
+        success = True
+
+        if len(genre) > 0:
+            cur = con.cursor()
+
+            get_genre_id
+            g_id = get_genre_id(genre)
+            if g_id == -1:
+
+                query = "INSERT INTO api_genre(name) VALUES ($$'{0}'$$) RETURNING id".format(genre)
+                cur.execute(query)
+                g_id = cur.fetchone()[0]
+                print 'Insert new genre: {0} with id: {1}'.format(genre, g_id)
+
+            query = "INSERT INTO api_document_genre(document_id, genre_id) VALUES ({0}, {1})".format(doc_id, g_id)
+            cur.execute(query)
+            print "Insert new api_document_genre for {0} => {1}".format(doc_id, genre)
+            cur.close()
+        return success
+
+
     for line in adoc:
         aline = line.split('|')
 
-        a1 = aline[0]
+        doc_id = aline[0]
+        a1 = aline[1]
 
         if a1 == 'Author 1':
             continue
 
-        a2 = aline[1]
-        a3 = aline[2]
+        a2 = aline[2]
         title = aline[3]
+        date = aline[5]
         link = aline[6]
+        g1 = aline[8]
+        g2 = aline[9]
+        g3 = aline[10]
+        publisher = aline[11]
 
-        print '\n','* ',title,' *'
+        print '\n','* ',title,' *', doc_id, doc_id == None, len(doc_id)
 
         # get document id
-        doc_ids = _get_title_ids(title)
+        if len(doc_id) == 0:
+            doc_ids = _get_title_ids(title)
 
-        if len(doc_ids) == 0:
-            print 'Title not found: ', title
-            break;
-        elif doc_ids[0] == None:
-            # TODO remove later
-            continue
+            if len(doc_ids) == 0:
+                print 'Title not found: ', title
+                exit(0)
+            elif doc_ids[0] == None:
+                # TODO remove later
+                continue
+                #print 'Title null {0}'.format(title)
+                #exit(0)
+            elif len(doc_ids) > 1:
+                print 'More than one title found for {0}'.format(title)
+                exit(0)
+            doc_id = doc_ids[0]
 
-        # TODO use first doc_id
-        if not do_author(a1, doc_ids[0]) or not do_author(a2, doc_ids[0]) or not do_author(a3, doc_ids[0]):
+        if len(date) == 4:
+            update_document_date(doc_id, date);
+
+        if publisher != None and len(publisher) > 0:
+            update_document_publisher(doc_id, publisher);
+            #exit(0)
+
+        if not do_author(doc_id, a1) or not do_author(doc_id, a2):
             break
+
+        if not do_genre(doc_id, g1) or not do_genre(doc_id, g2) or not do_genre(doc_id, g3):
+            break
+
+        # remove
+        con.commit()
 
 con.commit()
 con.close()
