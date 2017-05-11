@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from os.path import expanduser
 
@@ -8,7 +9,7 @@ import psycopg2
 data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
 
 authors = {}
-UNKOWN = ['Anon.', '"""A Yankee"""', 'Eudora', 'Evangeline', 'Porte']
+UNKOWN = ['Anon.', '"""A Yankee"""', 'Eudora', 'Evangeline', 'Porte', 'Yankee']
 fp = os.path.join(data_dir, 'gender.csv')
 with open(fp, 'r') as auths:
     for line in auths:
@@ -73,28 +74,128 @@ IDS = {
     "Abroad: Journal of a Tour Through Great Britain and on the Continent": 16,
     "Correspondence of James Fenimore-Cooper vol. 1": 170,
     "A noble life vol. 2": 173,
+
     "The Stickit minister": 26,
     "Oliver Cromwell's letters and speeches: with elucidations vol. 1": 180,
     "North of the Tweed vol. 3": 182,
     "Europe through a woman's eye": 183,
-
-
+    "Miss Armstrong's and other circumstances": 27,
+    "Benedict's wanderings": 186,
+    "Benedict's wanderings in Ireland, Scotland, Italy, & Sicily": 187,
+    "A tour thro' the whole island of Great Britain vol. 1-3": 507,
+    "The Cleekim Inn": 28,
+    "Diary, sketches, and reviews": 192,
+    "Observations in Europe, principally in France and Great Britain vol. 2": 33,
+    "Marriage vol. 1": 195,
     "A Californian circling the globe": None,
-    "A Memphian's trip to Europe with Cook's educational party": None,
+    "Ringan Gilhaize: or, The covenanters vol. 1": 204,
+    "Ringan Gilhaize: or, The covenanters vol. 2": 203,
+    "Ringan Gilhaize: or, The covenanters vol. 3": 205,
+    "Allan Breck vol. 2": 207,
+    "Christopher North: a memoir of John Wilson": 209,
+    "The fortunes of the Falconars vol. 2": 210,
+    "Annie Jennings vol. 1": 211,
+    "Annie Jennings vol. 2": 212,
+    "Colville of the guards vol. 1": 220,
+    "The Romance of War": 40,
+    "The King's own borderers vol. 1": 222,
+    "The master of Aberfeldie vol. 2": 218,
+    "The white cockade vol. 2": 219,
+    "Letters of Asa Gray vol. 1": 223,
+    "Letters and papers relating to Patrick, Master of Gray, afterwards seventh [sixth] Lord Gray": 496,
+    "A Year in Europe vol. 2": 226,
+    "A Traveller's Notes, in Scotland, Belgium, Devonshire, the Channel Islands, the Mediterranean, France, Somersetshire, Cornwall, the Scilly Islands, Wilts, and Dorsetshire": 36,
+    "Memoirs of the life and writings of Thomas Chalmers vol. 2": 230,
+    "Memoirs of the life and writings of Thomas Chalmers vol. 4": 231,
+    "The Story of My Life vol. 4-6": 522,
+    "Passages from the English Note-books of Nathaniel Hawthorne vol. 2": 46,
+    "Memoirs of William Hazlitt vol. 2": 239,
+    "Memoirs and correspondence of Francis Horner, M.P. vol. 1": 244,
+    "Life and Correspondence of David Hume vol. 1": 517,
+
+    "Elizabeth de Bruce vol. 1": 260,
+    "Elizabeth de Bruce vol. 2": 262,
+    "Elizabeth de Bruce vol. 3": 258,
+    "The Edinburgh tales vol. 1": 263,
+    "The Edinburgh tales vol. 2": 261,
+    "The Edinburgh tales vol. 3": 259,
+    "Memoirs of Sir William Knighton vol. 1": 265,
+    "The works of John Knox vol. 2": 267,
+    "Memoirs of Charles Lee Lewes vol. 3": 271,
+    "Memoirs of Charles Lee Lewes vol. 4": 270,
+    "Travels in land beyond the sea": 272,
+    "Life of Walter Scott": None,
+    "Memoirs of the life of Sir Walter Scott, Bart. vol. 4-6": 279,
+    "Memoirs of the life of Sir Walter Scott, Bart. vol. 7-9": 277,
+    "Peter's letters to his kinsfolk vol. 1": 278,
+    "Peter's letters to his kinsfolk vol. 2": 276,
+    "Peter's letters to his kinsfolk vol. 3": 280,
+    "Edinburgh": 285,
+    "Queen's Maries. A romance of Holyrood vol. 2": 63,
+    "Rambles in Europe": 292,
+    "Edinburgh and its neighbourhood, geological & historical": 293,
+    "The Provost-Marshal: a romance of the middle shires": 64,
+    "Memoirs, journals, and correspondence of Thomas Moore vol. 5": 299,
+    "Memoirs, journals, and correspondence of Thomas Moore vol. 8": 297,
+    "A year in Europe": 298,
+    "Rambles in Europe": 66,
+
+    "Andrew Ramsay of Errol vol. 1": 71,
+    "The Black Watch vol. 1": 321,
+    "The Black Watch vol. 3": 322,
+    "The White House at Inch Gow": 70,
+    "Aground in the shallows vol. 1": 72,
+    "Christie Johnstone: a novel": 73,
+    "The Itinerant, in Scotland": 332,
+    "The Fortunes of Nigel": None,
     "Guy Mannering": None,
+    "Tales of a Grandfather": None,
+    "The Abbot vol. 1": 548,
+    "The antiquary": None,
+    "Waverley vols. 1-3": 558,
+    "The journal of Walter Scott": None,
+    "The Weird of the Wentworths; A Tale of George IV's Time vol. 1": 534,
     "Haco the dreamer vol. 1": None,
     "Haco the dreamer vol. 2": None,
+    "A journal of travels in England, Holland and Scotland vol. 3": 347,
+    "Journal of a tour and residence in Great Britain vol. 2": 349,
+    "R. L. S. - Some Edinburgh Notes": None,
     "Holiday House": None,
-    "Life of Walter Scott": None,
-    "Lucy, Francis and Cousin Bill": None,
+    "Modern Flirtations vol. 2": 354,
+
+    "The library of choice literature vol. 1": 403,
+    "Mr Peters": 365,
+    "Sunny memories of foreign lands vol. 1": 381,
+    "The British isles": 391,
+    "The underground city (also pub. as 'The Child of the Cavern')": 545,
+    "His Dearest Wish vol. 2": 103,
+    "A Memphian's trip to Europe with Cook's educational party": None,
+    "A journal of a residence during several months in London": 104,
     "Nelly Armstrong: a story of the day vol. 1": None,
     "Nelly Armstrong: a story of the day vol. 2": None,
-    "R. L. S. - Some Edinburgh Notes": None,
-    "Tales of a Grandfather": None,
-    "The antiquary": None,
-    "The Fortunes of Nigel": None,
-    "The journal of Walter Scott": None,
+    "Penelope's Progress, chapters 8-11": 105,
+    "Penelope's Progress": 414,
+    "Penelope's Experiences in Scotland": 546,
+    "Memorials of Edinburgh in olden times": 106,
+    "The Works of Professor Wilson vol. 11: Tales": None,
+    "Wilson's tales of the borders and Scotland vol. 1": 422,
+    "Wilson's tales of the borders and Scotland vol. 11": 433,
+    "Wilson's tales of the borders and Scotland vol. 12": 435,
+    "Wilson's tales of the borders and Scotland vol. 2": 427,
+    "Wilson's tales of the borders and Scotland vol. 3": 428,
+    "Wilson's tales of the borders and Scotland vol. 4": 425,
+    "Wilson's tales of the borders and Scotland vol. 5": 429,
     "Wilson's tales of the borders and Scotland vol. 6": None,
+    "Wilson's tales of the borders and Scotland vol. 7": 432,
+    "Essays Critical and Imaginative vol. 1": None,
+    "Essays Critical and Imaginative vol. 2": None,
+    "The children's fairy geography": 107,
+    "Critical and miscellaneous essays vol. 1": 443,
+    "Noctes Ambrosianœ vol. 1": 437,
+    "Noctes Ambrosianœ vol. 2": 444,
+    "Noctes Ambrosianœ vol. 3": 431,
+    "Noctes Ambrosianœ vol. 4": 442,
+    "Lucy, Francis and Cousin Bill": None,
 }
 
 
@@ -176,7 +277,6 @@ def insert_author(name, gender):
 
     if len(name) == 0:
         exit(0)
-
 
     a_id = get_author_id(first_name, surname)
     if a_id == -1:
