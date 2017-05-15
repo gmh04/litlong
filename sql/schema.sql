@@ -22,6 +22,7 @@ CREATE TABLE api_publisher
 
 ALTER TABLE api_document DROP author;
 ALTER TABLE api_document ADD publisher_id INTEGER REFERENCES api_publisher(id);
+ALTER TABLE api_document ADD active BOOLEAN;
 
 CREATE TABLE api_genre
 (

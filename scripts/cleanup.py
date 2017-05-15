@@ -49,12 +49,12 @@ cur.execute(query)
 
 IDS = {
     "Varieties in Prose vol. 2": 1,
-    "Willie Gillies, chapter 1": None,
+    "Willie Gillies, chapter 1": 492,
     "The historical works of Sir James Balfour vol. 2": 115,
     "Beatty's tour in Europe": 125,
-    "Story of a Stolen Heir. A novel vol. 1": None,
-    "Story of a Stolen Heir. A novel vol. 2": None,
-    "Story of a Stolen Heir. A novel vol. 3": None,
+    "Story of a Stolen Heir. A novel vol. 1": 8,
+    #"Story of a Stolen Heir. A novel vol. 2": None,
+    #"Story of a Stolen Heir. A novel vol. 3": None,
     "Broken stowage": 129,
     "The journal of a tour to the Hebrides, with Samuel Johnson, LL.D.": 131,
     "The life of Samuel Johnson, LL.D.": 130,
@@ -87,7 +87,7 @@ IDS = {
     "Diary, sketches, and reviews": 192,
     "Observations in Europe, principally in France and Great Britain vol. 2": 33,
     "Marriage vol. 1": 195,
-    "A Californian circling the globe": None,
+    #"A Californian circling the globe": None,
     "Ringan Gilhaize: or, The covenanters vol. 1": 204,
     "Ringan Gilhaize: or, The covenanters vol. 2": 203,
     "Ringan Gilhaize: or, The covenanters vol. 3": 205,
@@ -124,7 +124,7 @@ IDS = {
     "Memoirs of Charles Lee Lewes vol. 3": 271,
     "Memoirs of Charles Lee Lewes vol. 4": 270,
     "Travels in land beyond the sea": 272,
-    "Life of Walter Scott": None,
+    #"Life of Walter Scott": None,
     "Memoirs of the life of Sir Walter Scott, Bart. vol. 4-6": 279,
     "Memoirs of the life of Sir Walter Scott, Bart. vol. 7-9": 277,
     "Peter's letters to his kinsfolk vol. 1": 278,
@@ -147,20 +147,20 @@ IDS = {
     "Aground in the shallows vol. 1": 72,
     "Christie Johnstone: a novel": 73,
     "The Itinerant, in Scotland": 332,
-    "The Fortunes of Nigel": None,
-    "Guy Mannering": None,
-    "Tales of a Grandfather": None,
+    #"The Fortunes of Nigel": None,
+    #"Guy Mannering": None,
+    #"Tales of a Grandfather": None,
     "The Abbot vol. 1": 548,
-    "The antiquary": None,
+    #"The antiquary": None,
     "Waverley vols. 1-3": 558,
-    "The journal of Walter Scott": None,
+    #"The journal of Walter Scott": None,
     "The Weird of the Wentworths; A Tale of George IV's Time vol. 1": 534,
-    "Haco the dreamer vol. 1": None,
-    "Haco the dreamer vol. 2": None,
+    #"Haco the dreamer vol. 1": None,
+    #"Haco the dreamer vol. 2": None,
     "A journal of travels in England, Holland and Scotland vol. 3": 347,
     "Journal of a tour and residence in Great Britain vol. 2": 349,
-    "R. L. S. - Some Edinburgh Notes": None,
-    "Holiday House": None,
+    #"R. L. S. - Some Edinburgh Notes": None,
+    #"Holiday House": None,
     "Modern Flirtations vol. 2": 354,
 
     "The library of choice literature vol. 1": 403,
@@ -169,15 +169,15 @@ IDS = {
     "The British isles": 391,
     "The underground city (also pub. as 'The Child of the Cavern')": 545,
     "His Dearest Wish vol. 2": 103,
-    "A Memphian's trip to Europe with Cook's educational party": None,
+    #"A Memphian's trip to Europe with Cook's educational party": None,
     "A journal of a residence during several months in London": 104,
-    "Nelly Armstrong: a story of the day vol. 1": None,
-    "Nelly Armstrong: a story of the day vol. 2": None,
+    #"Nelly Armstrong: a story of the day vol. 1": None,
+    #"Nelly Armstrong: a story of the day vol. 2": None,
     "Penelope's Progress, chapters 8-11": 105,
     "Penelope's Progress": 414,
     "Penelope's Experiences in Scotland": 546,
     "Memorials of Edinburgh in olden times": 106,
-    "The Works of Professor Wilson vol. 11: Tales": None,
+    #"The Works of Professor Wilson vol. 11: Tales": None,
     "Wilson's tales of the borders and Scotland vol. 1": 422,
     "Wilson's tales of the borders and Scotland vol. 11": 433,
     "Wilson's tales of the borders and Scotland vol. 12": 435,
@@ -185,17 +185,17 @@ IDS = {
     "Wilson's tales of the borders and Scotland vol. 3": 428,
     "Wilson's tales of the borders and Scotland vol. 4": 425,
     "Wilson's tales of the borders and Scotland vol. 5": 429,
-    "Wilson's tales of the borders and Scotland vol. 6": None,
+    #"Wilson's tales of the borders and Scotland vol. 6": None,
     "Wilson's tales of the borders and Scotland vol. 7": 432,
-    "Essays Critical and Imaginative vol. 1": None,
-    "Essays Critical and Imaginative vol. 2": None,
+    #"Essays Critical and Imaginative vol. 1": None,
+    #"Essays Critical and Imaginative vol. 2": None,
     "The children's fairy geography": 107,
     "Critical and miscellaneous essays vol. 1": 443,
     "Noctes Ambrosianœ vol. 1": 437,
     "Noctes Ambrosianœ vol. 2": 444,
     "Noctes Ambrosianœ vol. 3": 431,
     "Noctes Ambrosianœ vol. 4": 442,
-    "Lucy, Francis and Cousin Bill": None,
+    #"Lucy, Francis and Cousin Bill": None,
 }
 
 
@@ -207,12 +207,10 @@ def _get_title_ids(title):
     else:
         query = "SELECT id FROM api_document WHERE LOWER(title) like $${0}%$$".format(
             title.lower())
-        print query
         cur = con.cursor()
         cur.execute(query)
         for i in cur.fetchall():
             ids.append(i[0])
-        #print ids
     return ids
 
 
@@ -261,7 +259,6 @@ def get_genre_id(genre):
 
 def insert_author(name, gender):
     names = name.split(',')
-    print names
     if len(names) != 2:
         if names[0] in UNKOWN:
             #names[1] = ''
@@ -270,10 +267,8 @@ def insert_author(name, gender):
         else:
             print 'Name is not correct:  ', a1
             return -1;
-    print names
     first_name = names[1]
     surname = names[0]
-    print first_name, surname, gender
 
     if len(name) == 0:
         exit(0)
@@ -301,8 +296,17 @@ def insert_document_author(doc_id, author_id):
 
 
 def update_document_date(doc_id, date):
-    query = "UPDATE api_document SET pubdate = '{0}-01-02' WHERE id = {1}".format(
+    query = "UPDATE api_document SET pubdate = '{0}-01-01' WHERE id = {1}".format(
         date, doc_id)
+    cur = con.cursor()
+    cur.execute(query)
+    con.commit()
+    cur.close()
+
+
+def update_document_url(doc_id, url):
+    query = "UPDATE api_document SET url = '{0}' WHERE id = {1}".format(
+        url, doc_id)
     cur = con.cursor()
     cur.execute(query)
     con.commit()
@@ -325,6 +329,24 @@ def update_document_publisher(doc_id, name):
     cur.close()
 
 
+fp = os.path.join(data_dir, 'deletions.csv')
+with open(fp, 'r') as adoc:
+    cur = con.cursor()
+
+    for line in adoc:
+        aline = line.split('|')
+
+        pk = aline[0]
+
+        if pk == 'Primary key':
+            continue
+
+        query = "UPDATE api_document SET active = FALSE WHERE id = {0}".format(pk)
+        cur.execute(query)
+
+    con.commit()
+    cur.close()
+
 #fp = os.path.join(data_dir, 'authors.csv')
 fp = os.path.join(data_dir, 'Database - Doc level metadata - Data cleaning.csv')
 with open(fp, 'r') as adoc:
@@ -333,10 +355,6 @@ with open(fp, 'r') as adoc:
         success = True
 
         if len(name) > 0:
-
-            # TODO remove this
-            name = name.replace('(ed.)', '')
-            name = name.strip()
 
             if name in authors:
                 author_id = insert_author(name, authors[name])
@@ -379,7 +397,7 @@ with open(fp, 'r') as adoc:
     for line in adoc:
         aline = line.split('|')
 
-        doc_id = ''#aline[0]
+        doc_id = aline[0]
         a1 = aline[1]
 
         if a1 == 'Author 1':
@@ -394,16 +412,11 @@ with open(fp, 'r') as adoc:
         g3 = aline[10]
         publisher = aline[11]
 
-        # TODO: remove
-        if len(title) == 0:
-            print '\n','*** skip: empty title ***'
-            continue
-
         if len(doc_id) > 0 and doc_id[0] == '?':
             print '\n','*** skip: ',title,' ***'
             continue
 
-        print '\n','* ',title,' *'
+        print '\n','* ', doc_id, title,' *'
 
         # get document id
         if len(doc_id) == 0:
@@ -413,21 +426,24 @@ with open(fp, 'r') as adoc:
                 print 'Title not found: ', title
                 exit(0)
             elif doc_ids[0] == None:
-                # TODO remove later
-                continue
-                #print 'Title null {0}'.format(title)
-                #exit(0)
+                print 'Title null {0}'.format(title)
+                exit(0)
             elif len(doc_ids) > 1:
                 print 'More than one title found for {0}'.format(title)
                 exit(0)
             doc_id = doc_ids[0]
 
         if len(date) == 4:
-            update_document_date(doc_id, date);
+            if date == '????':
+                print 'Skip date for ', title
+            else:
+                update_document_date(doc_id, date)
 
         if publisher != None and len(publisher) > 0:
             update_document_publisher(doc_id, publisher);
-            #exit(0)
+
+        if link != None and len(link) > 0:
+            update_document_url(doc_id, link);
 
         if not do_author(doc_id, a1) or not do_author(doc_id, a2):
             break
@@ -435,8 +451,6 @@ with open(fp, 'r') as adoc:
         if not do_genre(doc_id, g1) or not do_genre(doc_id, g2) or not do_genre(doc_id, g3):
             break
 
-        # remove
-        con.commit()
 
 con.commit()
 con.close()
