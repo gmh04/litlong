@@ -9,10 +9,6 @@ import urllib
 
 db = {
     'NAME': 'litlong',
-#     'HOST': 'pg.edina.ac.uk',
-#     'PORT': '5432',
-#     'USER': 'palimpsest',
-#     'PASS': 'Cl8ngBkts',
 }
 
 fp = '{0}/.pgpass'.format(expanduser("~"))
