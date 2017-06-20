@@ -113,7 +113,7 @@ with open(fp, 'r') as adoc:
 
         con.commit()
 
-    for i in xrange(450):
+    for i in xrange(0):
         adoc.next()
     for line in adoc:
         aline = line.split('|')
