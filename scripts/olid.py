@@ -9,6 +9,10 @@ import urllib
 
 db = {
     'NAME': 'litlong',
+#     'HOST': 'pg.edina.ac.uk',
+#     'PORT': '5432',
+#     'USER': 'palimpsest',
+#     'PASS': 'Cl8ngBkts',
 }
 
 fp = '{0}/.pgpass'.format(expanduser("~"))
@@ -25,17 +29,21 @@ con = psycopg2.connect(
    "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db))
 
 
-query = "SELECT id, forenames, surname FROM api_author"
+# query = "SELECT id, forenames, surname FROM api_author"
 cur = con.cursor()
-cur.execute(query)
-for i in cur.fetchall():
-    forenames = i[1]
-    surname = i[2]
-    #print surname
-    pass
+# cur.execute(query)
+# for i in cur.fetchall():
+#     forenames = i[1]
+#     surname = i[2]
+#     #print surname
+#     pass
 
 
-#exit(0)
+doc_2_author = {
+    '61': '46',
+    '308': '218',
+    '525': '324'
+}
 
 data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
 fp = os.path.join(data_dir, 'Database - Doc level metadata - Data cleaning.csv')
@@ -66,14 +74,50 @@ with open(fp, 'r') as adoc:
                             #print doc
                             keys['doc'] = 'https://openlibrary.org{0}'.format(doc['key'])
 
-                        keys['authors'].append('https://openlibrary.org/authors/{0}'.format(
-                            doc['author_key'][i]))
+                        a_id = doc['author_key'][i]
+                        keys['authors'].append({
+                            'id': a_id,
+                            'url': 'https://openlibrary.org/authors/{0}'.format(a_id),
+                            'surname': surname
+                        })
 
             # just return first
             if 'doc' in keys:
                 return keys
 
-    for i in xrange(0):
+    def update_db(doc_id, doc_url, author):
+        #print doc_id, doc_url
+        doc_ol_id = doc_url.split('works/')[1]
+        author_ol_id = author['id']
+        print doc_id, doc_url, author['url'], doc_ol_id, author_ol_id, author['surname']
+
+        #
+        #print type(doc_ol_id)
+        query = "UPDATE api_document SET ol_id = %s WHERE id = %s"
+        cur.execute(query, (doc_ol_id, doc_id))
+
+        #print doc_id, doc_id in doc_2_author
+        if doc_id in doc_2_author:
+            query = "UPDATE api_author SET ol_id = %(ol_id)s WHERE id = %(a_id)s"
+            cur.execute(query,
+                {
+                    'ol_id': author_ol_id,
+                    'a_id': doc_2_author[doc_id]
+                }
+            )
+        else:
+            query = "UPDATE api_author SET ol_id = %(a_id)s WHERE id = (SELECT a.id FROM api_author a, api_document d, api_document_author da WHERE d.id = da.document_id AND da.author_id = a.id AND d.id = %(d_id)s AND lower(a.surname) = %(surname)s)"
+            cur.execute(query,
+                {
+                    'a_id': author_ol_id,
+                    'd_id': doc_id,
+                    'surname': author['surname']
+                }
+            )
+
+        con.commit()
+
+    for i in xrange(450):
         adoc.next()
     for line in adoc:
         aline = line.split('|')
@@ -108,14 +152,16 @@ with open(fp, 'r') as adoc:
         if r.status_code == 200:
             entry = r.json()
             doc_url = ''
-            author_urls = ''
+            author_url = ''
             if entry['num_found'] > 0:
                 #print entry
                 keys = get_keys(entry, author_surnames)
                 if keys:
                     doc_url = keys['doc']
-                    author_urls = keys['authors'][0]
-            print doc_id, '|' , title, '|', entry['num_found'], '|', doc_url, '|', author_urls
+                    author = keys['authors'][0]
+                    author_url = author['url']
+                    update_db(doc_id, doc_url, author)
+            #print doc_id, '|' , title, '|', entry['num_found'], '|', doc_url, '|', author_url
 
         else:
             print doc_id, '|' , title, '|', 0, '|' ,'error'
@@ -123,3 +169,6 @@ with open(fp, 'r') as adoc:
         if doc_id == '-63':
             exit(0)
         #print '\n'
+
+cur.close()
+con.close()

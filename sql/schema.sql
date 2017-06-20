@@ -5,6 +5,7 @@ CREATE TABLE api_author
   surname    TEXT NOT NULL,
   gender     CHARACTER(1),
   link       TEXT,
+  ol_id      CHARACTER VARYING(16);
   CHECK (surname <> '')
 );
 
@@ -23,6 +24,7 @@ CREATE TABLE api_publisher
 ALTER TABLE api_document DROP author;
 ALTER TABLE api_document ADD publisher_id INTEGER REFERENCES api_publisher(id);
 ALTER TABLE api_document ADD active BOOLEAN;
+ALTER TABLE api_document ADD ol_id CHARACTER VARYING(16);
 
 CREATE TABLE api_genre
 (
@@ -35,3 +37,6 @@ CREATE TABLE api_document_genre
   genre_id INTEGER NOT NULL REFERENCES api_genre(id),
   document_id INTEGER NOT NULL REFERENCES api_document(id)
 );
+
+
+-- ALTER TABLE api_author ADD ol_id CHARACTER VARYING(16);
