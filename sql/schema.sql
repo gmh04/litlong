@@ -38,5 +38,11 @@ CREATE TABLE api_document_genre
   document_id INTEGER NOT NULL REFERENCES api_document(id)
 );
 
+CREATE TABLE version
+(
+  version     CHARACTER VARYING(5),
+  timestamp   timestamp default current_timestamp,
+  description TEXT
+);
 
 -- ALTER TABLE api_author ADD ol_id CHARACTER VARYING(16);
