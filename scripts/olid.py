@@ -12,15 +12,15 @@ db = {
 }
 
 fp = '{0}/.pgpass'.format(expanduser("~"))
-with open(fp, 'r') as pgpass:
-    for line in pgpass:
-        aline = line.split(':')
-        if aline[2] == db['NAME']:
-            db['HOST'] = aline[0]
-            db['PORT'] = aline[1]
-            db['USER'] = aline[3]
-            db['PASS'] = aline[4].strip()
-            break
+# with open(fp, 'r') as pgpass:
+#     for line in pgpass:
+#         aline = line.split(':')
+#         if aline[2] == db['NAME']:
+#             db['HOST'] = aline[0]
+#             db['PORT'] = aline[1]
+#             db['USER'] = aline[3]
+#             db['PASS'] = aline[4].strip()
+#             break
 con = psycopg2.connect(
    "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db))
 

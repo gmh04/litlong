@@ -30,15 +30,18 @@ con = psycopg2.connect(
    "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db))
 cur = con.cursor()
 
+#query = "DELETE FROM api_location WHERE id > 40726"
+#cur.execute(query)
+
 data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
 fname = 'Easter egg locations and coordinates - Sheet1.csv'
 
 with open(os.path.join(data_dir, fname), 'r') as doc:
 
-    def get_location_id(text):
+    def get_location_id(lat, lon):
         id = None
-        query = "SELECT id FROM api_location WHERE text = %s"
-        cur.execute(query, (text,))
+        query = "SELECT id FROM api_location WHERE lat = %s AND lon = %s"
+        cur.execute(query, (float(lat), float(lon)))
         row = cur.fetchone()
         if row != None:
             id = row[0]
@@ -56,29 +59,36 @@ with open(os.path.join(data_dir, fname), 'r') as doc:
     for line in doc:
         row = line.split('|')
         desc = row[0]
+        #print desc, desc == 'Location description '
         if desc == 'Location description ':
             continue
 
-        loc_id = get_location_id(desc)
         coords = row[1].split(', ')
         lat = coords[0]
         lon = coords[1]
+        loc_id = get_location_id(lat, lon)
+        if loc_id:
+            print loc_id, desc
+        else:
+            print desc
+            exit(0)
+
         if loc_id == None:
-            loc_id = insert_location(desc, lat, lon)
+            loc_id = insert_location('Edinburgh', lat, lon)
         print loc_id, desc, lat, lon
         ids.append(loc_id)
     print ids
-    #print()
+    #exit(0)
 
     query = "SELECT id FROM api_locationmention WHERE location_id IN (SELECT id FROM api_location WHERE text = 'Edinburgh')";
     cur.execute(query)
     for lmid in cur.fetchall():
-        query = "UPDATE api_locationmentiom SET location_id = %s WHERE id = %s"
+        query = "UPDATE api_locationmention SET location_id = %s WHERE id = %s"
         new_loc = random.choice(ids)
-        #cur.execute(query, (new_loc, lmid[0]))
+        cur.execute(query, (new_loc, lmid[0]))
         print 'update ', lmid[0], ' with ', new_loc
 
-
+con.commit()
 
 cur.close()
 con.close()

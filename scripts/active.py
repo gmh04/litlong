@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+# sets documents in deletions.csv to inactive
 
 import os
 import psycopg2
