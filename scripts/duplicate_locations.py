@@ -29,8 +29,6 @@ with open(fp, 'r') as pgpass:
 con = psycopg2.connect(
    "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db))
 
-dup=[]
-
 query = "SELECT count(text), text, lat, lon FROM api_location GROUP BY text, lat, lon"
 cur = con.cursor()
 cur.execute(query)
@@ -57,7 +55,7 @@ for i in cur.fetchall():
             cur.execute(query, (loc_id, ))
             print 'Delete location {0}\n'.format(loc_id)
 
-        #exit(0)
+        print '--------------------------------------------'
 
 con.commit()
 cur.close()
