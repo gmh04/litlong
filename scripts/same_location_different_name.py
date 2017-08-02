@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# prints out locations that share coordinates but have a different place name text
+
 from os.path import expanduser
 
 import os
@@ -40,4 +42,4 @@ for i in cur.fetchall():
         if len(s) > 1:
             print ", ".join(s)
 
-print len(dup)
+#print len(dup)
