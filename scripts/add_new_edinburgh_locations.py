@@ -57,13 +57,14 @@ with open(os.path.join(data_dir, fname), 'r') as doc:
     for line in doc:
         row = line.split('|')
         desc = row[0]
-        #print desc, desc == 'Location description '
+
         if desc == 'Location description ':
             continue
-        if desc == 'Napier Merchiston campus':
-            continue
-        if desc == 'National Gallery':
-            continue
+        # if desc == 'Napier Merchiston campus':
+        #     continue
+        # if desc == 'National Gallery':
+        #     continue
+        #print row
         coords = row[1].split(', ')
         lat = coords[0]
         lon = coords[1]
@@ -81,9 +82,6 @@ with open(os.path.join(data_dir, fname), 'r') as doc:
         ids.append(loc_id)
     print ids
     #exit(0)
-
-
-#con.commit()
 
 cur.close()
 con.close()
