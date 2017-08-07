@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 
 # https://docs.google.com/spreadsheets/d/1kJOqJZd004mIbU3QxEgtUgFyaWmN1KkCCd1BiiUTZJs/edit#gid=0
-# update pubdate of documents
+# update title of each document
 
 import os
 import psycopg2
 
 from os.path import expanduser
-
-data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
 
 db = {
     'NAME': 'litlong',
@@ -27,30 +25,22 @@ con = psycopg2.connect(
     "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db));
 cur = con.cursor()
 
+data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'data')
 fp = os.path.join(data_dir, 'Database - Doc level metadata - Data cleaning.csv')
 
-
 with open(fp, 'r') as adoc:
+
     for line in adoc:
         aline = line.split('|')
-        pk = aline[0]
-        if pk == 'Primary key':
+        doc_id = aline[0]
+        title = aline[3]
+
+        if doc_id == 'Primary key':
             continue
-        pubdate = aline[5]
+        print 'Update document', doc_id, 'with new title', title
+        query = "UPDATE api_document SET title = %s WHERE id = %s"
+        cur.execute(query, (title, doc_id))
 
-        if len(pubdate) != 4:
-            continue
-
-        query = "SELECT * FROM api_document WHERE id = {0} AND cast(pubdate as varchar) LIKE $${1}%$$".format(pk, pubdate)
-
-        #print aline[0], aline[5]
-        cur.execute(query)
-        row = cur.fetchone()
-        if row == None:
-            #print pk, pubdate
-            query = 'UPDATE api_document SET pubdate = %s WHERE id = %s'
-            cur.execute(query, ('{0}-01-01'.format(pubdate), pk))
-            print 'Update document {0} with new pubdate {1}'.format(pk, pubdate)
 con.commit()
 cur.close()
 con.close()

@@ -80,7 +80,7 @@ with open(os.path.join(data_dir, fname), 'r') as doc:
             loc_id = insert_location('Edinburgh', lat, lon)
         print loc_id, desc, lat, lon
         ids.append(loc_id)
-    print ids
+    #print ids
     #exit(0)
 
 cur.close()
