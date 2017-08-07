@@ -35,7 +35,7 @@ ids = [i[0] for i in rows]
 print ids
 print len(ids)
 #exit(0)
-query = "SELECT id FROM api_locationmention WHERE location_id IN (SELECT id FROM api_location WHERE text = 'Edinburgh')";
+query = "SELECT id FROM api_locationmention WHERE location_id IN (SELECT id FROM api_location WHERE text IN ('Edinburgh', 'Edina', 'Edynburgh', 'Auld Reekie', 'Edinbrughe', 'Edinbrugh', 'Embro', 'Edinburg', 'Edinburghe', 'Edinboro', 'Dunedin', 'Embra'))"
 cur.execute(query)
 for lmid in cur.fetchall():
     query = "UPDATE api_locationmention SET location_id = %s WHERE id = %s"
