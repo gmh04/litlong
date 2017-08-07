@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# https://docs.google.com/spreadsheets/d/1kJOqJZd004mIbU3QxEgtUgFyaWmN1KkCCd1BiiUTZJs/edit#gid=0
+
 from os.path import expanduser
 
 import os
