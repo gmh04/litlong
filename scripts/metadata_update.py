@@ -25,6 +25,7 @@ with open(fp, 'r') as pgpass:
             db['PORT'] = aline[1]
             db['USER'] = aline[3]
             db['PASS'] = aline[4].strip()
+            break
 con = psycopg2.connect(
     "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db));
 cur = con.cursor()
