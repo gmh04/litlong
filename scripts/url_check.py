@@ -24,7 +24,7 @@ con = psycopg2.connect(
     "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db));
 cur = con.cursor()
 
-fp = os.path.join(data_dir, 'Database - Doc level metadata - Data cleaning.csv')
+fp = os.path.join(data_dir, 'Database - Doc level metadata - Data cleaning2.csv')
 
 with open(fp, 'r') as adoc:
 
@@ -34,7 +34,7 @@ with open(fp, 'r') as adoc:
         if doc_id == 'Primary key':
             continue
 
-        url = aline[6]
+        url = aline[8]
         if url[:4] == 'http':
             query = "SELECT count(*) FROM api_document WHERE url = %s and id = %s"
             cur.execute(query, (url, doc_id))

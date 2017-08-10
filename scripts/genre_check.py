@@ -24,7 +24,7 @@ con = psycopg2.connect(
     "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db));
 cur = con.cursor()
 
-fp = os.path.join(data_dir, 'Database - Doc level metadata - Data cleaning.csv')
+fp = os.path.join(data_dir, 'Database - Doc level metadata - Data cleaning2.csv')
 
 with open(fp, 'r') as adoc:
 
@@ -34,9 +34,9 @@ with open(fp, 'r') as adoc:
         if doc_id == 'Primary key':
             continue
 
-        g1 = aline[8]
-        g2 = aline[9]
-        g3 = aline[10]
+        g1 = aline[9]
+        g2 = aline[10]
+        g3 = aline[11]
         genres = [g1]
         if g2:
             genres.append(g2)
