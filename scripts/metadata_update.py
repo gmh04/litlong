@@ -25,6 +25,7 @@ with open(fp, 'r') as pgpass:
             db['PORT'] = aline[1]
             db['USER'] = aline[3]
             db['PASS'] = aline[4].strip()
+            break
 con = psycopg2.connect(
     "dbname='{NAME}' user='{USER}' host='{HOST}' port={PORT} password='{PASS}'".format(**db));
 cur = con.cursor()
@@ -206,17 +207,17 @@ with open(fp, 'r') as adoc:
             continue
 
         if True:
-            a1        = aline[1]
-            g1        = aline[2]
-            a2        = aline[3]
-            g2        = aline[4]
-            title     = aline[5]
-            pdate     = aline[6]
-            publisher = aline[7]
-            url       = aline[8]
-            genre1    = aline[9]
-            genre2    = aline[10]
-            genre3    = aline[11]
+            a1        = aline[1].strip()
+            g1        = aline[2].strip()
+            a2        = aline[3].strip()
+            g2        = aline[4].strip()
+            title     = aline[5].strip()
+            pdate     = aline[6].strip()
+            publisher = aline[7].strip()
+            url       = aline[8].strip()
+            genre1    = aline[9].strip()
+            genre2    = aline[10].strip()
+            genre3    = aline[11].strip()
 
             print 'Checking document ', doc_id
             do_author(doc_id, a1, g1)
